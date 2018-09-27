@@ -16,6 +16,7 @@ class FileSystemClient(object):
         try:
             proc = subprocess.Popen(command, shell=True)
             # process still running when returncode is None
+            # non-blocking check
             if proc.returncode is not None and proc.returncode != 0:
                 _, error = proc.communicate()
                 message = 'Cannot exec command: (return code: {0}): {1}'.format(proc.returncode, error)
@@ -27,6 +28,17 @@ class FileSystemClient(object):
             message = 'Cannot exec command: {0}'.format(str(e))
             self.logger.exception('Cannot exec command: ')
             return InternalOperationResult(ExecutionStatus.FATAL_ERROR, message), None
+
+    def execute_command_sync(self, command) -> InternalOperationResult:
+        """Blocking execution."""
+        try:
+            # raise exception when returncode != 0
+            subprocess.check_call(command, shell=True)
+            return InternalOperationResult(ExecutionStatus.SUCCESS)
+        except Exception as e:
+            message = 'Cannot exec command: {0}'.format(str(e))
+            self.logger.exception('Cannot exec command: ')
+            return InternalOperationResult(ExecutionStatus.FATAL_ERROR, message)
 
     def kill_process(self, pid, including_parent=True) -> InternalOperationResult:
         try:

@@ -33,7 +33,7 @@ class SetStorageCapacityMiddleware(object):
 
     def process_response(self, request, response):
         try:
-            if request.user.is_authenticated():
+            if hasattr(request, 'user') and request.user.is_authenticated():
                 self.handle_server_space_info(request)
                 self.handle_tablet_space_info(request)
             else:
