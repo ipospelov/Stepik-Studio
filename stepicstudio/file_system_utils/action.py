@@ -13,6 +13,7 @@ from stepicstudio.operations_statuses.statuses import ExecutionStatus
 import logging
 
 logger = logging.getLogger('stepic_studio.file_system_utils.action')
+MIN_ACCEPTABLE_DIFF = 7  # seconds
 
 
 def substep_server_path(**kwargs: dict) -> (str, str):
@@ -176,8 +177,11 @@ def update_time_records(substep_list, new_step_only=False, new_step_obj=None) ->
                 new_step_obj.save()
     summ = 0
     for substep in substep_list:
-        if substep.duration != 0:
+        if substep.duration != 0 \
+                and substep.screencast_duration != 0 \
+                and abs(substep.duration - substep.screencast_duration) < MIN_ACCEPTABLE_DIFF:
             continue
+
         for substep_path in substep.os_path_all_variants:
             if os.path.exists(substep_path):
                 if not new_step_only:
@@ -211,4 +215,3 @@ def get_storage_capacity(path) -> int:
 
 def get_server_disk_info(path) -> (int, int):
     return get_free_space(path), get_storage_capacity(path)
-

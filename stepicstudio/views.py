@@ -3,6 +3,7 @@ import copy
 import re
 from wsgiref.util import FileWrapper
 
+import httplib2 as httplib2
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseServerError, HttpResponseBadRequest, \
     JsonResponse
@@ -654,6 +655,12 @@ def generate_notes_page(request, course_id):
             notes.append({'id': 'Step' + str(s.id) + 'from' + str(s.from_lesson), 'text': s.text_data})
     args = {'notes': notes}
     return render_to_response('notes_page.html', args, context_instance=RequestContext(request))
+
+
+def autofocus(request):
+    h = httplib2.Http()
+    resp, content = h.request('http://192.168.0.80/api/cam/drivelens?af=oneshot',
+                              headers={'Cookie': 'acid=70ae; productId=VKIX00; brlang=0'})
 
 
 def error500_handler(request):

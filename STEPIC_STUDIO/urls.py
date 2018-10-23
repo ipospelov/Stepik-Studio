@@ -54,6 +54,8 @@ urlpatterns = patterns(
 
     url(r'^loggedin/$', 'stepicstudio.views.loggedin'),
     url(r'^notes/step/(?P<step_id>[0-9]+)/', 'stepicstudio.views.notes'),
+
+    url(r'^autofocus/', 'stepicstudio.views.autofocus'),
 )
 
 handler500 = 'stepicstudio.views.error500_handler'

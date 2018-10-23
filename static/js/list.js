@@ -348,6 +348,14 @@ var elements_subscriptor = function() {
         }, 1000);
     });
 
+    $(".af_button").off().on("click", function () {
+        $.ajax({
+            beforeSend: cookie_csrf_updater,
+            type: "GET",
+            url: "/autofocus/",
+        });
+    });
+
     $(document).keypress(function (event) {
         if (event.which === 32) {
             event.preventDefault();
